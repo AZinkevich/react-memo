@@ -5,6 +5,7 @@ import styles from "./Cards.module.css";
 import { EndGameModal } from "../../components/EndGameModal/EndGameModal";
 import { Button } from "../../components/Button/Button";
 import { Card } from "../../components/Card/Card";
+import { useEasyLevelContext } from "../../context/useEasyLevelContext.jsx";
 
 // Игра закончилась
 const STATUS_LOST = "STATUS_LOST";
@@ -41,6 +42,7 @@ function getTimerValue(startDate, endDate) {
  * previewSeconds - сколько секунд пользователь будет видеть все карты открытыми до начала игры
  */
 export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
+  const { lifes, setLifes, easy } = useEasyLevelContext();
   // В cards лежит игровое поле - массив карт и их состояние открыта\закрыта
   const [cards, setCards] = useState([]);
   // Текущий статус игры
@@ -73,6 +75,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
     setGameEndDate(null);
     setTimer(getTimerValue(null, null));
     setStatus(STATUS_PREVIEW);
+    easy ? setLifes(3) : setLifes(1);
   }
 
   /**
@@ -127,7 +130,24 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
 
     // "Игрок проиграл", т.к на поле есть две открытые карты без пары
     if (playerLost) {
+      if (lifes >= 2) {
+        //console.log(lifes);
+        const newCards = cards.map(card => {
+          if (card.id !== clickedCard.id) {
+            return card;
+          }
+          return {
+            ...card,
+            pair: true,
+          };
+        });
+        setCards(newCards);
+        setLifes(lifes - 1);
+        return;
+      }
+
       finishGame(STATUS_LOST);
+      easy ? setLifes(3) : setLifes(1);
       return;
     }
 
@@ -209,7 +229,11 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
           />
         ))}
       </div>
-
+      {easy === true && (
+        <div>
+          <p className={styles.title}>количество жизней: {lifes}</p>
+        </div>
+      )}
       {isGameEnded ? (
         <div className={styles.modalContainer}>
           <EndGameModal

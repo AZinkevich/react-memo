@@ -4,9 +4,29 @@ import { Button } from "../Button/Button";
 
 import deadImageUrl from "./images/dead.png";
 import celebrationImageUrl from "./images/celebration.png";
+import { useState } from "react";
+import { useParams } from "react-router-dom";
+import { useEasyLevelContext } from "../../context/useEasyLevelContext";
 
 export function EndGameModal({ isWon, gameDurationSeconds, gameDurationMinutes, onClick }) {
-  const title = isWon ? "Вы победили!" : "Вы проиграли!";
+  const { pairsCount } = useParams();
+  const { easy } = useEasyLevelContext();
+  const [leader, setLeader] = useState({
+    name: "Пользователь",
+    time: "",
+  });
+
+  console.log(leader);
+  console.log(setLeader);
+
+  const bestTime = () => {
+    if (!easy && pairsCount === 3) {
+      const currentTime = gameDurationMinutes * 60 + gameDurationSeconds;
+      console.log(currentTime);
+    }
+  };
+
+  const title = isWon ? (bestTime && "Вы попали на Лидерборд") || "Вы победили!" : "Вы проиграли!";
 
   const imgSrc = isWon ? celebrationImageUrl : deadImageUrl;
 

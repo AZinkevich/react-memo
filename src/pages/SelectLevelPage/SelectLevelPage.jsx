@@ -47,6 +47,9 @@ export function SelectLevelPage() {
           <input type="checkbox" name="checkbox" onChange={e => handleEasyLevel()} />
           <p className={easy ? styles.checkboxEasy : styles.checkboxNorm}>Режим с тремя попытками</p>
         </div>
+        <div>
+          <Link to={"/leaderboard"}>Перейти к лидерборду</Link>
+        </div>
       </div>
     </div>
   );

@@ -9,7 +9,6 @@ export const ScoreProvider = ({ children }) => {
   useEffect(() => {
     getScores().then(res => {
       setScores(res.leaders);
-      console.log(scores);
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

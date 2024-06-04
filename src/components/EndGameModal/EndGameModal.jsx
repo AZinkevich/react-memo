@@ -1,5 +1,5 @@
 import styles from "./EndGameModal.module.css";
-import { Button } from "../Button/Button";
+import { Button } from "../Button/Button.jsx";
 import deadImageUrl from "./images/dead.png";
 import celebrationImageUrl from "./images/celebration.png";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -65,7 +65,7 @@ export function EndGameModal({ isWon, gameDurationSeconds, gameDurationMinutes, 
       )
     : null;
 
-  const Btn = isWon ? (bestTime() && "Играть снова") || "Начать сначала" : null;
+  const Btn = isWon ? (bestTime() && "Играть снова") || "Начать сначала" : "Начать сначала";
 
   const linkText = isWon
     ? bestTime() && (

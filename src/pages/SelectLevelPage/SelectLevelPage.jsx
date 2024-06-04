@@ -48,7 +48,9 @@ export function SelectLevelPage() {
           <p className={easy ? styles.checkboxEasy : styles.checkboxNorm}>Режим с тремя попытками</p>
         </div>
         <div>
-          <Link to={"/leaderboard"}>Перейти к лидерборду</Link>
+          <Link className={styles.linkText} to={"/leaderboard"}>
+            Перейти к лидерборду
+          </Link>
         </div>
       </div>
     </div>

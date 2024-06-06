@@ -1,5 +1,5 @@
 export const getScores = () => {
-  return fetch("https://wedev-api.sky.pro/api/leaderboard", {
+  return fetch("https://wedev-api.sky.pro/api/v2/leaderboard", {
     method: "GET",
   }).then(res => {
     if (!res.ok) {
@@ -9,12 +9,13 @@ export const getScores = () => {
   });
 };
 
-export const postScore = ({ name, time }) => {
-  return fetch("https://wedev-api.sky.pro/api/leaderboard", {
+export const postScore = ({ name, time, achievements }) => {
+  return fetch("https://wedev-api.sky.pro/api/v2/leaderboard", {
     method: "POST",
     body: JSON.stringify({
       name,
       time,
+      achievements,
     }),
   }).then(res => {
     if (res.status === 400) {

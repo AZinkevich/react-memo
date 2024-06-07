@@ -82,3 +82,72 @@
   font-weight: 400;
   line-height: 48px;
 }
+
+.alohomora {
+    position: relative;
+    border-radius: 50%;
+    background-color: rgb(194, 245, 255);
+    border: none;
+    padding: 2.5px;
+    text-align: center;
+    text-decoration: none;
+  
+}
+
+.alohomoraBtn {
+  border-radius: 50%;
+  position: relative;
+  display: block;
+  width: 64px;
+  height: 64px;
+  background: transparent;
+  background-position: center center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  border: none;
+  cursor: pointer;
+}
+
+.alohomoraBtn:hover {
+  background-color: rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 0 99999px rgba(0, 0, 0, 0.5); /* fallback for IE */
+  box-shadow: 0 0 0 100vmax rgba(0, 0, 0, 0.5);
+}
+
+.popup {
+  display: none;
+  position: absolute;
+  z-index: 2;
+  top: 80px;
+  left: -90px;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  width: 200px;
+  height: auto;
+  padding: 20px;
+  border-radius: 12px;
+  font-size: 18px;
+  line-height: 24px;
+  color: #004980;
+  background-color: #c2f5ff;
+}
+
+.popup_heading {
+  text-align: center;
+  display: block;
+  font-size: 18px;
+  font-weight: bold;
+  font-family: StratosSkyeng;
+}
+
+.popup_info {
+  display: block;
+  text-align: center;
+  font-family: StratosSkyeng;
+  font-size: 18px;
+}
+
+.alohomora:hover .popup {
+  display: block;
+}

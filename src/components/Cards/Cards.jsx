@@ -6,6 +6,7 @@ import { EndGameModal } from "../../components/EndGameModal/EndGameModal";
 import { Button } from "../../components/Button/Button";
 import { Card } from "../../components/Card/Card";
 import { useEasyLevelContext } from "../../context/useEasyLevelContext.jsx";
+import alohomora from "./images/alohomora.svg";
 
 // Игра закончилась
 const STATUS_LOST = "STATUS_LOST";
@@ -42,6 +43,7 @@ function getTimerValue(startDate, endDate) {
  * previewSeconds - сколько секунд пользователь будет видеть все карты открытыми до начала игры
  */
 export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
+  const { isAlohomora, setIsAlohomora } = useEasyLevelContext();
   const { attempts, setAttempts, easy } = useEasyLevelContext();
   // В cards лежит игровое поле - массив карт и их состояние открыта\закрыта
   const [cards, setCards] = useState([]);
@@ -58,6 +60,21 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
     seconds: 0,
     minutes: 0,
   });
+
+  const useAlohomora = () => {
+    if (!isAlohomora) {
+      const closedCards = cards.filter(card => !card.open);
+      const randomCard = closedCards[Math.floor(Math.random() * closedCards.length)];
+      const findPair = closedCards.filter(
+        closedCard => randomCard.suit === closedCard.suit && randomCard.rank === closedCard.rank,
+      );
+      findPair[0].open = true;
+      if (findPair[1]) {
+        findPair[1].open = true;
+      }
+      setIsAlohomora(true);
+    }
+  };
 
   function finishGame(status = STATUS_LOST) {
     setGameEndDate(new Date());
@@ -76,6 +93,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
     setTimer(getTimerValue(null, null));
     setStatus(STATUS_PREVIEW);
     easy ? setAttempts(3) : setAttempts(1);
+    setIsAlohomora(false);
   }
 
   /**
@@ -214,6 +232,25 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
             </>
           )}
         </div>
+        {status === STATUS_IN_PROGRESS ? (
+          <div>
+            <div className={styles.alohomora}>
+              <button className={styles.alohomoraBtn} onClick={useAlohomora}>
+                <img className={styles.imageAlohamora} src={alohomora} alt="alohamora" />
+              </button>
+              <div className={styles.popup}>
+                <span className={styles.popup_heading}>Алохомора</span>
+                {isAlohomora ? (
+                  <span className={styles.popup_info}>Эта супер-сила уже использована</span>
+                ) : (
+                  <span className={styles.popup_info}>
+                    Открывается случайная пара карт или находится пара к открытой карте
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
+        ) : null}
         {status === STATUS_IN_PROGRESS ? <Button onClick={resetGame}>Начать заново</Button> : null}
       </div>
 

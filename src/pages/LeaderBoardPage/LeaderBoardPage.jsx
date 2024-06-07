@@ -23,7 +23,9 @@ export const LeaderBoardPage = () => {
     const scoreList = scores.map(score => {
       const power1 = score.achievements.includes(1);
       const power2 = score.achievements.includes(2);
-      return { ...score, power1, power2 };
+      const min = Math.floor(score.time / 60);
+      const sec = score.time - min * 60;
+      return { ...score, power1, power2, min, sec };
     });
     scoreList.sort((a, b) => a.time - b.time).slice(0, 10);
     //console.log(scoreList);
@@ -75,7 +77,9 @@ export const LeaderBoardPage = () => {
                         <img className={styles.image} src={nonPower2} alt={"nonPower2"} />
                       )}
                     </div>
-                    <p>{score.time}</p>
+                    <p>
+                      {score.min}:{score.sec}
+                    </p>
                   </div>
                 </div>
               </div>

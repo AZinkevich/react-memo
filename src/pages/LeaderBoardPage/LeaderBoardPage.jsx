@@ -1,4 +1,3 @@
-import { useScoreContext } from "../../context/useScoreContext.jsx";
 import { Button } from "../../components/Button/Button.jsx";
 import { useNavigate } from "react-router-dom";
 import styles from "./LeaderBoardPage.module.css";
@@ -6,33 +5,31 @@ import power1 from "./images/power1.svg";
 import nonPower1 from "./images/nonPower1.svg";
 import power2 from "./images/power2.svg";
 import nonPower2 from "./images/nonPower2.svg";
-import { useEffect } from "react";
-//import celebrationImageUrl from "./images/celebration.png";
-//import { Link } from "react-router-dom";
-
+import { useEffect, useState } from "react";
+import { getScores } from "../../api.js";
 export const LeaderBoardPage = () => {
-  const { scores, setScores } = useScoreContext();
   const navigate = useNavigate();
-  //const [scoreList, setScoreList] = useState([]);
+  const [scoreList, setScoreList] = useState([]);
 
   const LetsPlay = e => {
     navigate("/");
   };
 
   useEffect(() => {
-    const scoreList = scores.map(score => {
-      const power1 = score.achievements.includes(1);
-      const power2 = score.achievements.includes(2);
-      const min = Math.floor(score.time / 60);
-      const sec = score.time - min * 60;
-      return { ...score, power1, power2, min, sec };
+    getScores().then(data => {
+      setScoreList(
+        data.leaders
+          .sort((a, b) => a.time - b.time)
+          .map(score => {
+            const power1 = score.achievements.includes(1);
+            const power2 = score.achievements.includes(2);
+            const min = Math.floor(score.time / 60);
+            const sec = score.time - min * 60;
+            return { ...score, power1, power2, min, sec };
+          }),
+      );
     });
-    scoreList.sort((a, b) => a.time - b.time).slice(0, 10);
-    //console.log(scoreList);
-    setScores(scoreList);
-  }, [setScores]);
-
-  console.log(scores);
+  }, []);
 
   let nn = 0;
 
@@ -55,21 +52,21 @@ export const LeaderBoardPage = () => {
             </div>
           </div>
           <div>
-            {scores.map(score => (
-              <div className={styles.row} key={score.id}>
+            {scoreList.slice(0, 10).map(position => (
+              <div className={styles.row} key={position.id}>
                 <p>{(nn += 1)}</p>
                 <div className={styles.table__right}>
-                  <p>{score.name}</p>
+                  <p>{position.name}</p>
                   <div className={styles.table__right__right}>
                     <div className={styles.achievements}>
-                      {score.power1 ? (
+                      {position.power1 ? (
                         <div className={styles.imageActive} data-title="Игра пройдена в сложном режиме">
                           <img className={styles.imageActive} src={power1} alt={"power1"} />
                         </div>
                       ) : (
                         <img className={styles.image} src={nonPower1} alt={"nonPower1"} />
                       )}
-                      {score.power2 ? (
+                      {position.power2 ? (
                         <div className={styles.imageActive} data-title="Игра пройдена без супер-сил">
                           <img className={styles.imageActive} src={power2} alt={"power2"} />
                         </div>
@@ -78,7 +75,7 @@ export const LeaderBoardPage = () => {
                       )}
                     </div>
                     <p>
-                      {score.min}:{score.sec}
+                      {position.min}:{position.sec}
                     </p>
                   </div>
                 </div>

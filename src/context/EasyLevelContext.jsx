@@ -8,9 +8,12 @@ export const EasyLevelProvider = ({ children }) => {
   const [easy, setEasy] = useState(false);
 
   const [isAlohomora, setIsAlohomora] = useState(false);
+  const [isSupervision, setIsSupervision] = useState(false);
 
   return (
-    <EasyLevelContext.Provider value={{ attempts, setAttempts, easy, setEasy, isAlohomora, setIsAlohomora }}>
+    <EasyLevelContext.Provider
+      value={{ attempts, setAttempts, easy, setEasy, isAlohomora, setIsAlohomora, isSupervision, setIsSupervision }}
+    >
       {children}
     </EasyLevelContext.Provider>
   );

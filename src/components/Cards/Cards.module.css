@@ -50,6 +50,7 @@
   margin-top: 34px;
   margin-bottom: 10px;
 }
+
 .previewDescription {
   font-size: 18px;
   line-height: 18px;
@@ -83,18 +84,23 @@
   line-height: 48px;
 }
 
-.alohomora {
-    position: relative;
-    border-radius: 50%;
-    background-color: rgb(194, 245, 255);
-    border: none;
-    padding: 2.5px;
-    text-align: center;
-    text-decoration: none;
-  
+.superPowers {
+  display: flex;
+  gap: 20px;
 }
 
-.alohomoraBtn {
+.alohomora, .supervision {
+  position: relative;
+  border-radius: 50%;
+  background-color: rgb(194, 245, 255);
+  border: none;
+  padding: 2.5px;
+  text-align: center;
+  text-decoration: none;
+}
+
+
+.alohomoraBtn, .supervisionBtn {
   border-radius: 50%;
   position: relative;
   display: block;
@@ -108,9 +114,10 @@
   cursor: pointer;
 }
 
-.alohomoraBtn:hover {
+.alohomoraBtn:hover, .supervisionBtn:hover {
   background-color: rgba(0, 0, 0, 0.5);
-  box-shadow: 0 0 0 99999px rgba(0, 0, 0, 0.5); /* fallback for IE */
+  box-shadow: 0 0 0 99999px rgba(0, 0, 0, 0.5);
+  /* fallback for IE */
   box-shadow: 0 0 0 100vmax rgba(0, 0, 0, 0.5);
 }
 
@@ -149,5 +156,9 @@
 }
 
 .alohomora:hover .popup {
+  display: block;
+}
+
+.supervision:hover .popup {
   display: block;
 }

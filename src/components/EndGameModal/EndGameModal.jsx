@@ -14,8 +14,8 @@ export function EndGameModal({ isWon, gameDurationSeconds, gameDurationMinutes, 
   const [setError] = useState(null);
   const { easy } = useEasyLevelContext();
   const { scores } = useScoreContext();
-  const { isAlohomora } = useEasyLevelContext();
-  const [achievements] = useState([Number(!easy), Number(!isAlohomora)]);
+  const { isAlohomora, isSupervision } = useEasyLevelContext();
+  const [achievements] = useState([Number(!easy), Number(!isAlohomora || !isSupervision)]);
   const [newScore, setNewScore] = useState({
     name: "Пользователь",
     time: "",
@@ -24,6 +24,7 @@ export function EndGameModal({ isWon, gameDurationSeconds, gameDurationMinutes, 
   const currentTime = gameDurationMinutes * 60 + gameDurationSeconds;
   // console.log(easy);
   // console.log(pairsCount);
+
   function bestTime() {
     if (!easy && pairsCount === "9") {
       const topScore = scores

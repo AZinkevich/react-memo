@@ -7,6 +7,7 @@ import { Button } from "../../components/Button/Button";
 import { Card } from "../../components/Card/Card";
 import { useEasyLevelContext } from "../../context/useEasyLevelContext.jsx";
 import alohomora from "./images/alohomora.svg";
+import supervision from "./images/supervision.svg";
 
 // Игра закончилась
 const STATUS_LOST = "STATUS_LOST";
@@ -15,6 +16,8 @@ const STATUS_WON = "STATUS_WON";
 const STATUS_IN_PROGRESS = "STATUS_IN_PROGRESS";
 // Начало игры: игрок видит все карты в течении нескольких секунд
 const STATUS_PREVIEW = "STATUS_PREVIEW";
+
+let paused;
 
 function getTimerValue(startDate, endDate) {
   if (!startDate && !endDate) {
@@ -26,6 +29,17 @@ function getTimerValue(startDate, endDate) {
 
   if (endDate === null) {
     endDate = new Date();
+  }
+
+  if (paused === true) {
+    const diffInSecconds = Math.floor((endDate.getTime() - 5000 - startDate.getTime()) / 1000);
+    const minutes = Math.floor(diffInSecconds / 60);
+    const seconds = diffInSecconds % 60;
+
+    return {
+      minutes,
+      seconds,
+    };
   }
 
   const diffInSecconds = Math.floor((endDate.getTime() - startDate.getTime()) / 1000);
@@ -44,6 +58,8 @@ function getTimerValue(startDate, endDate) {
  */
 export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
   const { isAlohomora, setIsAlohomora } = useEasyLevelContext();
+  const { isSupervision, setIsSupervision } = useEasyLevelContext();
+  paused = isSupervision;
   const { attempts, setAttempts, easy } = useEasyLevelContext();
   // В cards лежит игровое поле - массив карт и их состояние открыта\закрыта
   const [cards, setCards] = useState([]);
@@ -60,21 +76,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
     seconds: 0,
     minutes: 0,
   });
-
-  const useAlohomora = () => {
-    if (!isAlohomora) {
-      const closedCards = cards.filter(card => !card.open);
-      const randomCard = closedCards[Math.floor(Math.random() * closedCards.length)];
-      const findPair = closedCards.filter(
-        closedCard => randomCard.suit === closedCard.suit && randomCard.rank === closedCard.rank,
-      );
-      findPair[0].open = true;
-      if (findPair[1]) {
-        findPair[1].open = true;
-      }
-      setIsAlohomora(true);
-    }
-  };
+  const [pause, setPause] = useState(300);
 
   function finishGame(status = STATUS_LOST) {
     setGameEndDate(new Date());
@@ -94,6 +96,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
     setStatus(STATUS_PREVIEW);
     easy ? setAttempts(3) : setAttempts(1);
     setIsAlohomora(false);
+    setIsSupervision(false);
   }
 
   /**
@@ -203,11 +206,47 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
   useEffect(() => {
     const intervalId = setInterval(() => {
       setTimer(getTimerValue(gameStartDate, gameEndDate));
-    }, 300);
+    }, pause);
     return () => {
       clearInterval(intervalId);
     };
-  }, [gameStartDate, gameEndDate]);
+  }, [gameStartDate, gameEndDate, pause]);
+
+  const useAlohomora = () => {
+    if (!isAlohomora) {
+      const closedCards = cards.filter(card => !card.open);
+      const randomCard = closedCards[Math.floor(Math.random() * closedCards.length)];
+      const findPair = closedCards.filter(
+        closedCard => randomCard.suit === closedCard.suit && randomCard.rank === closedCard.rank,
+      );
+      findPair[0].open = true;
+      if (findPair[1]) {
+        findPair[1].open = true;
+      }
+      setIsAlohomora(true);
+      if (closedCards.length <= 2) {
+        //setStatus(STATUS_WON);
+        finishGame(STATUS_WON);
+      }
+    }
+  };
+
+  const useSupervision = () => {
+    if (!isSupervision) {
+      setPause(5000);
+      const oldCards = cards;
+      setCards(
+        cards.map(card => {
+          return { ...card, open: true };
+        }),
+      );
+      setTimeout(() => {
+        setCards(oldCards);
+        setPause(300);
+      }, 5000);
+      setIsSupervision(true);
+    }
+  };
 
   return (
     <div className={styles.container}>
@@ -233,7 +272,20 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
           )}
         </div>
         {status === STATUS_IN_PROGRESS ? (
-          <div>
+          <div className={styles.superPowers}>
+            <div className={styles.supervision}>
+              <button className={styles.supervisionBtn} onClick={useSupervision}>
+                <img className={styles.imageSupervision} src={supervision} alt="supervision" />
+              </button>
+              <div className={styles.popup}>
+                <span className={styles.popup_heading}>Прозрение</span>
+                {isSupervision ? (
+                  <span className={styles.popup_info}>Эта супер-сила уже использована</span>
+                ) : (
+                  <span className={styles.popup_info}>Открываются все карты на 5 секунд</span>
+                )}
+              </div>
+            </div>
             <div className={styles.alohomora}>
               <button className={styles.alohomoraBtn} onClick={useAlohomora}>
                 <img className={styles.imageAlohamora} src={alohomora} alt="alohamora" />

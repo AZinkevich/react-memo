@@ -7,6 +7,7 @@ import power2 from "./images/power2.svg";
 import nonPower2 from "./images/nonPower2.svg";
 import { useEffect, useState } from "react";
 import { getScores } from "../../api.js";
+
 export const LeaderBoardPage = () => {
   const navigate = useNavigate();
   const [scoreList, setScoreList] = useState([]);
